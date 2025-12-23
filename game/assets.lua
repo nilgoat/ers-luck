@@ -39,6 +39,7 @@ local function load_sprite(path, sprite_data)
       image = image,
       nframes = #files,
       rates = rates,
+      loop = sprite_data.loop or false,
    }
 end
 
@@ -52,6 +53,8 @@ function assets.load()
    -- TODO
    -- hardcoding paths, but could do something more dynamic / handle errors
    t.handslap = load_sprite("assets/handslap/", require("assets.handslap"))
+   t.items = load_sprite("assets/items/", require("assets.items"))
+   t.lucky = load_sprite("assets/lucky/", require("assets.lucky"))
    t.bg_dungeon = load_sprite("assets/bg_dungeon/", require("assets.bg_dungeon"))
 
    return t

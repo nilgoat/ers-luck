@@ -16,7 +16,11 @@ function love.load()
 
    assets = game.assets.load()
    state = game.state.new()
+
+   game.init(assets, state)
 end
 
 function love.update(dt) game.update(dt, assets, state) end
 function love.draw() game.draw(assets, state) end
+function love.keypressed(key) game.keypressed(key, assets, state) end
+function love.keyreleased(key) game.keyreleased(key, assets, state) end
