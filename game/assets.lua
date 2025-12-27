@@ -4,42 +4,50 @@
 --- @module game.assets
 local assets = {}
 
+local function process_states(states)
+   local s = {}
+
+   if not states then
+      return s
+   end
+
+   for name, data in pairs(states) do
+      local frames = {}
+      local delay = data.delay or 0
+      for _, frame in ipairs(data.frames) do
+         table.insert(frames, frame)
+      end
+      s[name] = {
+         frames = frames,
+         nframes = #frames,
+         delay = delay,
+         next = data.next,
+      }
+   end
+
+   -- TODO
+   -- could do some validation, making sure next states are valid, frames are
+   -- within range, delays are positive, etc
+
+   return s
+end
+
 local function load_sprite(path, sprite_data)
    local files = {}
-   for _, f in ipairs(sprite_data.frames) do
+   for _, f in ipairs(sprite_data.files) do
       table.insert(files, path .. f)
    end
-   local image = love.graphics.newArrayImage(files)
 
-   local durations = sprite_data.durations or {}
-   local d_ty = type(durations)
-   if d_ty == "number" then
-      local t = {}
-      for _ = 1, #files do
-         table.insert(t, durations)
-      end
-      durations = t
-   elseif d_ty == "table" then
-      for i = 1, #files do
-         if not durations[i] then
-            durations[i] = 0
-         end
-      end
-   end
-
-   -- convert frame duration to rate for use mutiplying against delta time
-   local rates = {}
-   for _, v in ipairs(durations) do
-      if v > 0 then
-         table.insert(rates, 1 / v)
-      end
-   end
+   -- TODO
+   -- everything is a 2d array texture, even for single frame sprites. it might
+   -- be more reasonable to use different texture types, and the tradeoffs
+   -- should be investigated.
+   local texture = love.graphics.newArrayImage(files)
+   local states = process_states(sprite_data.states)
 
    return {
-      image = image,
-      nframes = #files,
-      rates = rates,
-      loop = sprite_data.loop or false,
+      texture = texture,
+      states = states,
    }
 end
 
@@ -48,16 +56,25 @@ function assets.load()
       error("assets folder could not be found")
    end
 
-   local t = {}
+   local loaded = {
+      -- loaded sprite data
+      sprite = {},
+   }
+
+   local function _load(module_path)
+      local p = string.gsub(module_path, "%.", "/") .. "/"
+      local m = require(module_path)
+      loaded.sprite_data = load_sprite(p, m)
+   end
 
    -- TODO
    -- hardcoding paths, but could do something more dynamic / handle errors
-   t.handslap = load_sprite("assets/handslap/", require("assets.handslap"))
-   t.items = load_sprite("assets/items/", require("assets.items"))
-   t.lucky = load_sprite("assets/lucky/", require("assets.lucky"))
-   t.bg_dungeon = load_sprite("assets/bg_dungeon/", require("assets.bg_dungeon"))
+   _load("assets.handslap")
+   _load("assets.items")
+   _load("assets.lucky")
+   _load("assets.bg_dungeon")
 
-   return t
+   return loaded
 end
 
 return assets
