@@ -60,7 +60,8 @@ local function load_sprite(path, sprite_data)
 end
 
 function assets.load()
-   if not love.filesystem.getInfo("assets", "directory") then
+   local info = love.filesystem.getInfo("assets")
+   if not (info.type == "directory" or info.type == "symlink") then
       error("assets folder could not be found")
    end
 
