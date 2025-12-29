@@ -12,7 +12,7 @@ function love.load()
       error("array texture type is unsupported on this platform")
    end
 
-   love.graphics.setBackgroundColor(0.2, 0.2, 0.2, 1)
+   love.graphics.setBackgroundColor(0, 0, 0)
 
    assets = game.assets.load()
    state = game.state.new()
@@ -24,3 +24,4 @@ function love.update(dt) game.update(dt, assets, state) end
 function love.draw() game.draw(assets, state) end
 function love.keypressed(key) game.keypressed(key, assets, state) end
 function love.keyreleased(key) game.keyreleased(key, assets, state) end
+function love.resize(w, h) game.resize(w, h) end

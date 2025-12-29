@@ -7,24 +7,34 @@ local game = {
    assets = require("game.assets"),
 }
 
+local sprite = require("game.sprite")
+
+local canvas
+local scale = 1
+local width, height = 960, 540
+local ox, oy = 0, 0
+
 function game.init(assets, state)
-   --state:anim_play("item", assets.items, 460, 100, true)
+   canvas = love.graphics.newCanvas(960, 540)
+   canvas:setFilter("linear", "nearest")
+
+   state.bg = sprite.new(assets.sprite.bg_dungeon)
 end
 
 function game.update(dt, assets, state)
-   --state:anim_update(dt)
+   state.bg:update(dt)
+   state:update(dt)
 end
 
 function game.draw(assets, state)
-   --[[
-   love.graphics.drawLayer(assets.bg_dungeon.image, 1, 0, 0)
-   love.graphics.drawLayer(assets.lucky.image, state.lucky, 0, 0)
+   love.graphics.setCanvas(canvas)
+   love.graphics.clear(0.2, 0.2, 0.2)
 
-   for _, anim in pairs(state.anim) do
-      local sprite, x, y = anim.sprite, anim.x + anim.ox, anim.y + anim.oy
-      love.graphics.drawLayer(sprite.image, math.floor(anim.frame), x, y)
-   end
-   ]]
+   state.bg:draw()
+   state:draw()
+
+   love.graphics.setCanvas()
+   love.graphics.draw(canvas, math.floor(ox), math.floor(oy), 0, scale, scale)
 end
 
 function game.keypressed(key, assets, state)
@@ -39,12 +49,20 @@ function game.keypressed(key, assets, state)
       if state.lucky > assets.lucky.nframes then
          state.lucky = 1
       end
-   elseif key == "space" then
-      state:anim_play("slap", assets.handslap, 740, 180)
-   end
    ]]
+   if key == "space" then
+      state:action_slap(assets, 840, 270)
+   end
 end
 
 function game.keyreleased(key, assets, state) end
+
+function game.resize(w, h)
+   local sx = w / width
+   local sy = h / height
+   scale = math.max(1, math.min(sx, sy))
+   ox = (w - width * scale) / 2
+   oy = (h - height * scale) / 2
+end
 
 return game

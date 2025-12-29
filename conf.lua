@@ -6,4 +6,7 @@ function love.conf(t)
    t.window.title = "ers_luck"
    t.window.width = 960
    t.window.height = 540
+   t.window.minwidth = 960
+   t.window.minheight = 540
+   t.window.resizable = true
 end
