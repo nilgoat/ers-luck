@@ -45,8 +45,7 @@ end
 -- @int[opt=0] rot rotation to apply in radians
 -- @int[opt=1] scale factor to scale the sprite by
 function Sprite:draw(rot, scale)
-   local x, y = self.x + self.ox, self.y + self.oy
-   love.graphics.drawLayer(self.data.texture, self.frame, x, y, rot, scale, scale)
+   love.graphics.drawLayer(self.data.texture, self.frame, self.x, self.y, rot, scale, scale, self.ox, self.oy)
 end
 
 --- create a new sprite instance
