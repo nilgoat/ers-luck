@@ -44,10 +44,18 @@ local function load_sprite(path, sprite_data)
    -- should be investigated.
    local texture = love.graphics.newArrayImage(files)
    local states = process_states(sprite_data.states)
+   local ox, oy = 0, 0
+   if sprite_data.offset then
+      ox = sprite_data.offset[1] or 0
+      oy = sprite_data.offset[2] or 0
+   end
 
    return {
       texture = texture,
       states = states,
+      default = sprite_data.default,
+      ox = ox,
+      oy = oy,
    }
 end
 
@@ -62,9 +70,10 @@ function assets.load()
    }
 
    local function _load(module_path)
-      local p = string.gsub(module_path, "%.", "/") .. "/"
-      local m = require(module_path)
-      loaded.sprite_data = load_sprite(p, m)
+      local path = string.gsub(module_path, "%.", "/") .. "/"
+      local name = string.gsub(module_path, "assets%.", "")
+      local mod = require(module_path)
+      loaded.sprite[name] = load_sprite(path, mod)
    end
 
    -- TODO

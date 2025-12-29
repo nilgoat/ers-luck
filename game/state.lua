@@ -7,48 +7,24 @@ local state = {}
 -- class table
 local State = {}
 
-function State:anim_play(name, sprite, x, y, jiggle)
-   self.anim[name] = {
-      sprite = sprite,
-      frame = 1,
-      x = x,
-      y = y,
-      jiggle = jiggle or false,
-      angle = 0,
-      ox = 0,
-      oy = 0,
-   }
-end
+local sprite = require("game.sprite")
 
-local TAU = math.pi * 2
-
-local function angle_update(angle, dt)
-   angle = angle + dt
-   if angle > TAU then
-      angle = angle - angle
-   end
-   return angle
-end
-
-function State:anim_update(dt)
-   for name, anim in pairs(self.anim) do
-      local sprite = anim.sprite
-
-      if anim.jiggle then
-         anim.angle = angle_update(anim.angle, dt * 3)
-         anim.oy = math.sin(anim.angle) * 20
-      end
-
-      local rate = sprite.rates[math.floor(anim.frame)]
-      anim.frame = anim.frame + dt * rate
-      if anim.frame >= sprite.nframes + 1 then
-         if anim.sprite.loop then
-            anim.frame = 1
-         else
-            self.anim[name] = nil
-         end
+function State:update(dt)
+   for name, sprite in pairs(self.anim) do
+      if not sprite:update(dt) then
+         self.anim[name] = nil
       end
    end
+end
+
+function State:draw()
+   for _, sprite in pairs(self.anim) do
+      sprite:draw()
+   end
+end
+
+function State:action_slap(assets, x, y)
+   self.anim.slap = sprite.new(assets.sprite.handslap, x, y)
 end
 
 function state.new()
