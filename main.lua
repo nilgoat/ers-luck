@@ -24,4 +24,7 @@ function love.update(dt) game.update(dt, assets, state) end
 function love.draw() game.draw(assets, state) end
 function love.keypressed(key) game.keypressed(key, assets, state) end
 function love.keyreleased(key) game.keyreleased(key, assets, state) end
+function love.mousemoved(x, y, dx, dy, istouch) game.mousemoved(x, y, dx, dy, istouch, assets, state) end
+function love.mousepressed(x, y, button) game.mousepressed(x, y, button, assets, state) end
+function love.mousereleased(x, y, button) game.mousereleased(x, y, button, assets, state) end
 function love.resize(w, h) game.resize(w, h) end

@@ -13,6 +13,7 @@ local canvas
 local scale = 1
 local width, height = 960, 540
 local ox, oy = 0, 0
+local sx, sy = 0, 0
 
 function game.init(assets, state)
    canvas = love.graphics.newCanvas(960, 540)
@@ -49,13 +50,28 @@ function game.keypressed(key, assets, state)
       if state.lucky > assets.lucky.nframes then
          state.lucky = 1
       end
-   ]]
    if key == "space" then
       state:action_slap(assets, 840, 270)
    end
+   ]]
 end
 
 function game.keyreleased(key, assets, state) end
+
+local function screen_scale(x, y)
+   return (x - ox) / scale, (y - oy) / scale
+end
+
+function game.mousemoved(x, y, dx, dy, istouch, assets, state)
+   sx, sy = screen_scale(x, y)
+end
+
+function game.mousepressed(x, y, button, assets, state)
+   local _x, _y = screen_scale(x, y)
+   state:action_slap(assets, _x, _y)
+end
+
+function game.mousereleased(x, y, button, assets, state) end
 
 function game.resize(w, h)
    local sx = w / width
