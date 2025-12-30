@@ -17,6 +17,7 @@ function love.load()
    context = {
       assets = game.assets.load(),
       state = game.state.new(),
+      screen = game.screen.new(960, 540),
    }
 
    game.init(context)
