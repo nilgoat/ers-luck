@@ -3,8 +3,8 @@
 
 local game = require("game")
 
-local assets
-local state
+-- overall game context, tracking initialized assets, state, etc
+local context
 
 function love.load()
    local textypes = love.graphics.getTextureTypes()
@@ -14,17 +14,19 @@ function love.load()
 
    love.graphics.setBackgroundColor(0, 0, 0)
 
-   assets = game.assets.load()
-   state = game.state.new()
+   context = {
+      assets = game.assets.load(),
+      state = game.state.new(),
+   }
 
-   game.init(assets, state)
+   game.init(context)
 end
 
-function love.update(dt) game.update(dt, assets, state) end
-function love.draw() game.draw(assets, state) end
-function love.keypressed(key) game.keypressed(key, assets, state) end
-function love.keyreleased(key) game.keyreleased(key, assets, state) end
-function love.mousemoved(x, y, dx, dy, istouch) game.mousemoved(x, y, dx, dy, istouch, assets, state) end
-function love.mousepressed(x, y, button) game.mousepressed(x, y, button, assets, state) end
-function love.mousereleased(x, y, button) game.mousereleased(x, y, button, assets, state) end
-function love.resize(w, h) game.resize(w, h) end
+function love.update(dt) game.update(dt, context) end
+function love.draw() game.draw(context) end
+function love.keypressed(key) game.keypressed(key, context) end
+function love.keyreleased(key) game.keyreleased(key, context) end
+function love.mousemoved(x, y, dx, dy, istouch) game.mousemoved(x, y, dx, dy, istouch, context) end
+function love.mousepressed(x, y, button) game.mousepressed(x, y, button, context) end
+function love.mousereleased(x, y, button) game.mousereleased(x, y, button, context) end
+function love.resize(w, h) game.resize(w, h, context) end

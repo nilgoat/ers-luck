@@ -15,30 +15,30 @@ local width, height = 960, 540
 local ox, oy = 0, 0
 local sx, sy = 0, 0
 
-function game.init(assets, state)
+function game.init(c)
    canvas = love.graphics.newCanvas(960, 540)
    canvas:setFilter("linear", "nearest")
 
-   state.bg = sprite.new(assets.sprite.bg_dungeon)
+   c.state.bg = sprite.new(c.assets.sprite.bg_dungeon)
 end
 
-function game.update(dt, assets, state)
-   state.bg:update(dt)
-   state:update(dt)
+function game.update(dt, c)
+   c.state.bg:update(dt)
+   c.state:update(dt)
 end
 
-function game.draw(assets, state)
+function game.draw(c)
    love.graphics.setCanvas(canvas)
    love.graphics.clear(0.2, 0.2, 0.2)
 
-   state.bg:draw()
-   state:draw()
+   c.state.bg:draw()
+   c.state:draw()
 
    love.graphics.setCanvas()
    love.graphics.draw(canvas, math.floor(ox), math.floor(oy), 0, scale, scale)
 end
 
-function game.keypressed(key, assets, state)
+function game.keypressed(key, c)
    --[[
    if key == "left" then
       state.lucky = state.lucky - 1
@@ -56,24 +56,24 @@ function game.keypressed(key, assets, state)
    ]]
 end
 
-function game.keyreleased(key, assets, state) end
+function game.keyreleased(key, c) end
 
 local function screen_scale(x, y)
    return (x - ox) / scale, (y - oy) / scale
 end
 
-function game.mousemoved(x, y, dx, dy, istouch, assets, state)
+function game.mousemoved(x, y, dx, dy, istouch, c)
    sx, sy = screen_scale(x, y)
 end
 
-function game.mousepressed(x, y, button, assets, state)
+function game.mousepressed(x, y, button, c)
    local _x, _y = screen_scale(x, y)
-   state:action_slap(assets, _x, _y)
+   c.state:action_slap(c.assets, _x, _y)
 end
 
-function game.mousereleased(x, y, button, assets, state) end
+function game.mousereleased(x, y, button, c) end
 
-function game.resize(w, h)
+function game.resize(w, h, c)
    local sx = w / width
    local sy = h / height
    scale = math.max(1, math.min(sx, sy))
